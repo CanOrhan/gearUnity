@@ -18,8 +18,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class BbcRssService extends AbstractRssIntentService {
+    //TODO: Implement alarm
+
+    @Inject Bus mBus;
     private static final String ACTION_REQUEST_FEED = "com.samsung.developer.gearunity.rss_service.bbc_request";
     private static final String BBC_RSS_URL = "http://feeds.bbci.co.uk/news/technology/rss.xml";
+
     private Callback mRssCallback = new Callback() {
         @Override
         public void OnPreLoad() {
@@ -53,8 +57,6 @@ public class BbcRssService extends AbstractRssIntentService {
         }
     };
 
-    @Inject Bus mBus;
-
     public BbcRssService() {
         super(ACTION_REQUEST_FEED);
     }
@@ -62,7 +64,7 @@ public class BbcRssService extends AbstractRssIntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d("GearStuff", "Handling intent");
-        if(mBus == null){
+        if(mBus == null){ //TODO: Make a SpecialSamsungBus
             ((RssApplication)getApplication()).getObjectGraph().inject(this);
             //TODO: Generify
             Handler handler = new Handler(Looper.getMainLooper());

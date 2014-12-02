@@ -10,13 +10,13 @@ import java.util.List;
  */
 public class RssFeedUpdateEvent {
 
-    private ArrayList<Article> mAricles = new ArrayList<Article>();
+    private ArrayList<Article> mArticles = new ArrayList<Article>();
 
     public RssFeedUpdateEvent(List<Article> articles) {
-        mAricles.addAll(articles);
+        mArticles.addAll(articles);
     }
 
     public ArrayList<Article> getArticles(){
-        return mAricles;
+        return mArticles;
     }
 }

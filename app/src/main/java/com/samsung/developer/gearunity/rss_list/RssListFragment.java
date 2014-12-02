@@ -1,13 +1,18 @@
-package com.samsung.developer.gearunity;
+package com.samsung.developer.gearunity.rss_list;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.pkmmte.pkrss.Article;
+import com.samsung.developer.gearunity.R;
+import com.samsung.developer.gearunity.gear_notifications.GearAnnouncer;
 import com.samsung.developer.gearunity.rss_service.bus.RssFeedUpdateEvent;
 import com.squareup.otto.Bus;
 
@@ -16,12 +21,24 @@ import javax.inject.Inject;
 import com.samsung.developer.gearunity.application.RssApplication;
 import com.squareup.otto.Subscribe;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RssListFragment extends Fragment {
     @Inject Bus mBus;
+    @InjectView(R.id.article_list) ListView mArticleList;
+
+
+    private AdapterView.OnItemClickListener mArticleClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            getActivity().startService(new Intent(GearAnnouncer.getAction()));
+        }
+    };
 
     public RssListFragment() {
         // Required empty public constructor
@@ -38,11 +55,15 @@ public class RssListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_rss_list, container, false);
+        ButterKnife.inject(this, rootView);
+        mArticleList.setOnItemClickListener(mArticleClick);
         return rootView;
     }
 
     @Subscribe public void onFeedUpdateEvent(RssFeedUpdateEvent event){
-        Log.d("GearStuff", "Got " + event.getArticles().size() + " articles!");
+        Article[] articles = event.getArticles().toArray(new Article[]{});
+        RssListAdapter adapter = new RssListAdapter(getActivity(), articles);
+        mArticleList.setAdapter(adapter);
     }
 
 }
