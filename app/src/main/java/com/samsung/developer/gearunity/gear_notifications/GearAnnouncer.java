@@ -28,6 +28,7 @@ public class GearAnnouncer extends IntentService{
     SrnRichNotificationManager mNotificationManager; //Can't be injected - 3rd party class
     @Inject Bus mBus;
     @Inject Application mApplication;
+    @Inject RichNotificationListener mRichNotificationListener;
 
     public GearAnnouncer(){
         super("GearAnnouncer");
@@ -65,11 +66,13 @@ public class GearAnnouncer extends IntentService{
             mNotificationManager = new SrnRichNotificationManager(mApplication);
         }
         mNotificationManager.start();
+        mNotificationManager.registerRichNotificationListener(mRichNotificationListener);
 
         Event event = new Event(mApplication);
 
         Log.d("GearStuff", "Notification manager connection is: " + mNotificationManager.isConnected());
         if(intent.getAction().equals(ACTION_NOTIFY_GEAR)){
+            Log.d("GearStuff", "Correct action");
             if (mNotificationManager.isConnected()) {
                 mNotificationManager.notify(event.createRichNotification());
             } else {

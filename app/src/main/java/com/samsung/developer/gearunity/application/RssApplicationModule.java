@@ -9,6 +9,7 @@ import dagger.Provides;
 
 import com.samsung.developer.gearunity.RssActivity;
 import com.samsung.developer.gearunity.gear_notifications.GearAnnouncer;
+import com.samsung.developer.gearunity.gear_notifications.RichNotificationListener;
 import com.samsung.developer.gearunity.rss_list.RssListFragment;
 import com.samsung.developer.gearunity.rss_service.BbcRssService;
 
@@ -24,7 +25,8 @@ import com.samsung.developer.gearunity.rss_service.BbcRssService;
                 RssListFragment.class,
                 RssActivity.class,
                 BbcRssService.class,
-                GearAnnouncer.class
+                GearAnnouncer.class,
+                RichNotificationListener.class
         }
 )
 public class RssApplicationModule {
