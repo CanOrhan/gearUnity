@@ -1,6 +1,7 @@
 package com.samsung.developer.gearunity.gear_notifications;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.samsung.android.sdk.richnotification.SrnRichNotificationManager;
@@ -24,7 +25,6 @@ public class RichNotificationListener implements SrnRichNotificationManager.Even
 
     @Override
     public void onError(UUID arg0, SrnRichNotificationManager.ErrorType arg1) {
-        // TODO Auto-generated method stub
         Toast.makeText(mApplication,
                 "Something wrong with uuid" + arg0.toString() + "Error:" + arg1.toString(),
                 Toast.LENGTH_LONG).show();
@@ -32,7 +32,6 @@ public class RichNotificationListener implements SrnRichNotificationManager.Even
 
     @Override
     public void onRead(UUID arg0) {
-        // TODO Auto-generated method stub
         Toast.makeText(mApplication, "Read uuid" + arg0.toString(), Toast.LENGTH_LONG)
                 .show();
 
@@ -40,7 +39,6 @@ public class RichNotificationListener implements SrnRichNotificationManager.Even
 
     @Override
     public void onRemoved(UUID arg0) {
-        // TODO Auto-generated method stub
         Toast.makeText(mApplication, "Removed uuid" + arg0.toString(), Toast.LENGTH_LONG)
                 .show();
 

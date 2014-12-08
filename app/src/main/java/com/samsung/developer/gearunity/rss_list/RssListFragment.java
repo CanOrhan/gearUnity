@@ -31,18 +31,21 @@ import butterknife.InjectView;
 public class RssListFragment extends Fragment {
     @Inject Bus mBus;
     @InjectView(R.id.article_list) ListView mArticleList;
-
+    RssListAdapter adapter;
 
     private AdapterView.OnItemClickListener mArticleClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            getActivity().startService(new Intent(GearAnnouncer.getAction()));
+            Intent intent = new Intent(GearAnnouncer.getAction());
+            Article item = adapter.getItem(position);
+            intent.putExtra(GearAnnouncer.EXTRA_TITLE, item.getTitle());
+            intent.putExtra(GearAnnouncer.EXTRA_SUB_HEADER, item.getContent());
+            intent.putExtra(GearAnnouncer.EXTRA_DESCRIPTION, item.getDescription());
+            getActivity().startService(intent);
         }
     };
 
-    public RssListFragment() {
-        // Required empty public constructor
-    }
+    public RssListFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,13 +60,14 @@ public class RssListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_rss_list, container, false);
         ButterKnife.inject(this, rootView);
         mArticleList.setOnItemClickListener(mArticleClick);
+        adapter = new RssListAdapter(getActivity());
+        mArticleList.setAdapter(adapter);
         return rootView;
     }
 
     @Subscribe public void onFeedUpdateEvent(RssFeedUpdateEvent event){
         Article[] articles = event.getArticles().toArray(new Article[]{});
-        RssListAdapter adapter = new RssListAdapter(getActivity(), articles);
-        mArticleList.setAdapter(adapter);
+        adapter.setData(articles);
     }
 
 }

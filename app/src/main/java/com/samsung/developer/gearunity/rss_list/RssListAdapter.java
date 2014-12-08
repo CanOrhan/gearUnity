@@ -16,7 +16,11 @@ import com.samsung.developer.gearunity.R;
 public class RssListAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private Article[] mItems;
+    private Article[] mItems = new Article[0];
+
+    public RssListAdapter(Context context){
+        mContext = context;
+    }
 
     public RssListAdapter(Context context, Article[] objects) {
         mContext = context;
@@ -29,7 +33,7 @@ public class RssListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Article getItem(int position) {
         return mItems[position];
     }
 
@@ -54,5 +58,14 @@ public class RssListAdapter extends BaseAdapter {
         viewHolder.setTitle(item.getTitle());
         viewHolder.setDetails(item.getDescription());
         return convertView;
+    }
+
+    public Article[] getData(){
+        return mItems;
+    }
+
+    public void setData(Article[] data) {
+        mItems = data;
+        notifyDataSetChanged();
     }
 }

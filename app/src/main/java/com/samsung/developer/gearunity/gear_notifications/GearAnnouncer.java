@@ -25,7 +25,11 @@ import javax.inject.Inject;
 public class GearAnnouncer extends IntentService{
 
     public final static String ACTION_NOTIFY_GEAR = "com.samsung.developer.gearunity.notify_gear";
-    SrnRichNotificationManager mNotificationManager; //Can't be injected - 3rd party class
+    public final static String EXTRA_TITLE = "com.samsung.developer.gearunity.notify_gear.title";
+    public final static String EXTRA_SUB_HEADER = "com.samsung.developer.gearunity.notify_gear.subheader";
+    public final static String EXTRA_DESCRIPTION = "com.samsung.developer.gearunity.notify_gear.description";
+
+    SrnRichNotificationManager mRichNotificationManager; //Can't be injected - 3rd party class
     @Inject Bus mBus;
     @Inject Application mApplication;
     @Inject RichNotificationListener mRichNotificationListener;
@@ -46,44 +50,53 @@ public class GearAnnouncer extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        final String title = intent.getStringExtra(EXTRA_TITLE);
+        final String subHeader = intent.getStringExtra(EXTRA_SUB_HEADER);
+        final String description = intent.getStringExtra(EXTRA_DESCRIPTION);
+
+
         Srn srn = new Srn();
         try {
-            // Initialize an instance of Srn.
             srn.initialize(this);
-        } catch (SsdkUnsupportedException e) {
-            // Error handling
-        }
-        Log.d("GearStuff", "Got Intent");
-        if(mBus == null) {
-            ((RssApplication) getApplication()).getObjectGraph().inject(this);
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mBus.register(this);
-                }
-            });
-            mNotificationManager = new SrnRichNotificationManager(mApplication);
-        }
-        mNotificationManager.start();
-        mNotificationManager.registerRichNotificationListener(mRichNotificationListener);
-
-        Event event = new Event(mApplication);
-
-        Log.d("GearStuff", "Notification manager connection is: " + mNotificationManager.isConnected());
-        if(intent.getAction().equals(ACTION_NOTIFY_GEAR)){
-            Log.d("GearStuff", "Correct action");
-            if (mNotificationManager.isConnected()) {
-                mNotificationManager.notify(event.createRichNotification());
-            } else {
-                Notification notification = new Notification.Builder(this)
-                        .setContentTitle("New mail from " + "test@gmail.com")
-                        .setContentText("Subject")
-                        .setSmallIcon(R.drawable.ic_launcher).build();
-                SrnRichNotificationManager.setRouteCondition(notification);
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(0, notification);
+            Log.d("GearStuff", "Got Intent");
+            if(mBus == null) {
+                ((RssApplication) getApplication()).getObjectGraph().inject(this);
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBus.register(this);
+                    }
+                });
+                mRichNotificationManager = new SrnRichNotificationManager(mApplication);
             }
+
+            String logMe = String.format("Posting %s - %s - %s", title, subHeader, description);
+            Log.d("GearStuff", logMe);
+
+            if(intent.getAction().equals(ACTION_NOTIFY_GEAR)){
+                if (mRichNotificationManager.isConnected()) {
+                    Log.d("GearStuff", "Correct");
+                    mRichNotificationManager.start();
+                    mRichNotificationManager.registerRichNotificationListener(mRichNotificationListener);
+                    NewsEventNotification newsEventNotification = new NewsEventNotification(mApplication, title, subHeader, description);
+                    newsEventNotification.setAlertType(SrnRichNotification.AlertType.SOUND_AND_VIBRATION, SrnRichNotification.PopupType.NORMAL);
+                    mRichNotificationManager.notify(newsEventNotification);
+                } else {
+                    Log.d("GearStuff", "Incorrect");
+                    Notification notification = new Notification.Builder(this)
+                            .setContentTitle(title)
+                            .setSubText(subHeader)
+                            .setContentText(description)
+                            .setSmallIcon(R.drawable.ic_launcher).build();
+                    SrnRichNotificationManager.setRouteCondition(notification);
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.notify(0, notification);
+                }
+            }
+        } catch (SsdkUnsupportedException e) {
+            Log.d("GearStuff", e.getLocalizedMessage());
         }
     }
 
