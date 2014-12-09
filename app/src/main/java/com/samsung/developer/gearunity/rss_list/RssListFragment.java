@@ -36,11 +36,13 @@ public class RssListFragment extends Fragment {
     private AdapterView.OnItemClickListener mArticleClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(GearAnnouncer.getAction());
             Article item = adapter.getItem(position);
+
+            Intent intent = new Intent(GearAnnouncer.getAction());
             intent.putExtra(GearAnnouncer.EXTRA_TITLE, item.getTitle());
             intent.putExtra(GearAnnouncer.EXTRA_SUB_HEADER, item.getContent());
             intent.putExtra(GearAnnouncer.EXTRA_DESCRIPTION, item.getDescription());
+            intent.putExtra(GearAnnouncer.EXTRA_GO_TO, item.getSource().toString());
             getActivity().startService(intent);
         }
     };
