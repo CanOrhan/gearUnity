@@ -61,10 +61,22 @@ public class NewsEventNotification extends SrnRichNotification{
     private ArrayList<SrnAction> generateActions(Uri goTo){
         ArrayList<SrnAction> actions = new ArrayList<SrnAction>();
 
+        //Go to website
         SrnHostAction launchBbcWebsiteAction = new SrnHostAction("Read on phone");
         Intent bbcWebsiteIntent = new Intent(Intent.ACTION_VIEW, goTo);
         launchBbcWebsiteAction.setCallbackIntent(SrnAction.CallbackIntent.getActivityCallback(bbcWebsiteIntent));
+
+        //Share
+        SrnHostAction launchShareChooser = new SrnHostAction("Share");
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "Have you seen this? " + goTo.toString());
+        shareIntent.setType("text/plain");
+        launchShareChooser.setCallbackIntent(SrnAction.CallbackIntent.getActivityCallback(shareIntent));
+
+        //Add all actions
         actions.add(launchBbcWebsiteAction);
+        actions.add(launchShareChooser);
 
         return actions;
     }
