@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <uses-permission android:name="com.samsung.wmanager.ENABLE_NOTIFICATION" />
+    <uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY"/>
+
     <application
         android:name="com.samsung.developer.gearunity.application.RssApplication"
         android:allowBackup="true"
@@ -19,6 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".gear_notifications.GearAnnouncer">
+            <intent-filter>
+                <action android:name="com.samsung.developer.gearunity.notify_gear"/>
+            </intent-filter>
+        </service>
 
         <service
             android:name=".rss_service.BbcRssService"

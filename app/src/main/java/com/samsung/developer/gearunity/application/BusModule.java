@@ -1,6 +1,7 @@
 package com.samsung.developer.gearunity.application;
 
 import com.samsung.developer.gearunity.RssActivity;
+import com.samsung.developer.gearunity.gear_notifications.GearAnnouncer;
 import com.samsung.developer.gearunity.rss_service.BbcRssService;
 import com.squareup.otto.Bus;
 
@@ -8,8 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import com.samsung.developer.gearunity.GearAnnouncerService;
-import com.samsung.developer.gearunity.RssListFragment;
+import com.samsung.developer.gearunity.rss_list.RssListFragment;
 
 /**
  * Created by c.orhan on 27/11/2014.
@@ -18,7 +18,7 @@ import com.samsung.developer.gearunity.RssListFragment;
         complete = false,
         injects = {
                 RssListFragment.class,
-                GearAnnouncerService.class,
+                GearAnnouncer.class,
                 RssActivity.class,
                 BbcRssService.class
         }

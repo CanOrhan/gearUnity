@@ -3,19 +3,24 @@ package com.samsung.developer.gearunity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.samsung.developer.gearunity.application.RssApplication;
+import com.samsung.developer.gearunity.rss_list.RssListFragment;
 import com.samsung.developer.gearunity.rss_service.AbstractRssIntentService;
 import com.samsung.developer.gearunity.rss_service.bus.DownloadingRssFeedEvent;
+import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import javax.inject.Inject;
 
 public class RssActivity extends Activity {
 
+    @Inject Bus mBus;
     @Inject AbstractRssIntentService mRssService;
 
     @Override
@@ -31,6 +36,11 @@ public class RssActivity extends Activity {
         ((RssApplication)getApplication()).getObjectGraph().inject(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startService(new Intent(mRssService.getIntentActionString()));
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
